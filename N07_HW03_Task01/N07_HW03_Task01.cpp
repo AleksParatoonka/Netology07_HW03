@@ -34,9 +34,16 @@ public:
     ~smart_array() {
         delete[] arr;
     }
+    smart_array(const smart_array&) = delete;
+    smart_array& operator=(const smart_array&) = delete;
 
     int get_element(int i) {
         try {
+            if (i < 0) {
+                throw MyException("Некорректный индекс");
+                return 0;
+            }
+            return arr[i];
             if (i >= size) {
                 throw MyException("Запрашиваемого индекса нет в массиве");
                 return 0;

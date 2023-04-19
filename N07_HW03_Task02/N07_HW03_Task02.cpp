@@ -30,23 +30,43 @@ public:
         size = size_;
         arr = new int[size_]();
     }
-    smart_array& operator=(smart_array& other) {
-        delete[] arr;
+    smart_array(smart_array& other) {
         size = other.get_size();
-        next_element = size;
+        next_element = other.get_next_element();
         arr = new int[size]();
-        for (int i = 0; i < size ; i++)
+        for (int i = 0; i < size; i++)
         {
-            arr[i]=other.get_element(i);
+            arr[i] = other.get_element(i);
         }
+    }
+    smart_array& operator=(smart_array& other) {
+        if (&other != this)
+        {
+            delete[] arr;
+            size = other.get_size();
+            //next_element = size;
+            next_element = other.get_next_element();
+            arr = new int[size]();
+            for (int i = 0; i < size; i++)
+            {
+                arr[i] = other.get_element(i);
+            }
+        }
+        
+        
         return *this;
     }
+    
     ~smart_array() {
         delete[] arr;
     }
 
     int get_element(int i) {
         try {
+            if (i < 0) {
+                throw MyException("Некорректный индекс");
+                return 0;
+            }
             if (i >= size) {
                 throw MyException("Запрашиваемого индекса нет в массиве");
                 return 0;
@@ -59,6 +79,9 @@ public:
     }
     int get_size() {
         return size;
+    }
+    int get_next_element() {
+        return next_element;
     }
 
     void add_element(int input) {
@@ -119,6 +142,12 @@ int main()
 
         arr = new_array;
         arr.print_dynamic_array();
+
+        // --- copy ---
+
+        new_array.add_element(49);
+        smart_array array_copy(new_array);
+        array_copy.print_dynamic_array();
     }
     catch (const std::exception& ex) {
         std::cout << ex.what() << std::endl;
